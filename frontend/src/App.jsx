@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Upload, BookOpen, CheckCircle, Cpu, Loader2, Save, Bookmark, Trash2, ArrowLeft, Eye } from "lucide-react";
 import MermaidDiagram from "./components/MermaidDiagram";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("analyzer"); // 'analyzer' or 'saved_notes'
@@ -24,7 +24,7 @@ export default function App() {
 
   const fetchSavedNotes = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/notes`);
+      const res = await axios.get(`${API_BASE}/notes`);
       if (res.data.status === "success") {
         setSavedNotes(res.data.notes);
       }
@@ -52,7 +52,7 @@ export default function App() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(`${API_BASE}/api/analyze_slide`, formData, {
+      const response = await axios.post(`${API_BASE}/analyze_slide`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -81,7 +81,7 @@ export default function App() {
         mermaid_code: analysis.mermaid_code,
       };
 
-      const res = await axios.post(`${API_BASE}/api/notes/save`, payload);
+      const res = await axios.post(`${API_BASE}/notes/save`, payload);
       if (res.data.status === "success") {
         setSaveSuccess(true);
         fetchSavedNotes(); // Refresh saved notes list
@@ -98,7 +98,7 @@ export default function App() {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
 
     try {
-      await axios.delete(`${API_BASE}/api/notes/${id}`);
+      await axios.delete(`${API_BASE}/notes/${id}`);
       fetchSavedNotes();
       if (selectedSavedNote?.id === id) {
         setSelectedSavedNote(null);

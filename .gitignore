@@ -1,0 +1,15 @@
+# Sensitive & Env Files
+.env
+*.env
+backend/.env
+
+# Python
+venv/
+.venv/
+__pycache__/
+
+# Node / React
+node_modules/
+dist/
+build/
+.DS_Store
